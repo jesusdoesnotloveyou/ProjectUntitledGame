@@ -3,7 +3,7 @@
 #include "AI/PUBossCharacter.h"
 #include "Runtime/AIModule/Classes/AIController.h"
 #include "Runtime/AIModule/Classes/BrainComponent.h"
-#include "Components/TPAIWeaponComponent.h"
+#include "AI/Components/TPAIWeaponComponent.h"
 
 APUBossCharacter::APUBossCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

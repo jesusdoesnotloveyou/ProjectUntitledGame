@@ -3,7 +3,7 @@
 
 #include "AI/TPBaseAIController.h"
 #include "AI/Components/TPAIPerceptionComponent.h"
-#include "TPDummyCharacter.h"
+#include "PUAICharacter.h"
 
 ATPBaseAIController::ATPBaseAIController()
 {
@@ -15,7 +15,7 @@ void ATPBaseAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	const auto AICharacter = Cast<ATPDummyCharacter>(InPawn);
+	const auto AICharacter = Cast<APUAICharacter>(InPawn);
 	if (AICharacter)
 	{
 		RunBehaviorTree(AICharacter->BehaviorTreeAsset);

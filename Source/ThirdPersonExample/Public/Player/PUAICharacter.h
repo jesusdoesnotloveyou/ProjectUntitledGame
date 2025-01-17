@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "Player/TPBaseCharacter.h"
 #include "Interfaces/CombatSystem/Attackable.h"
-#include "TPDummyCharacter.generated.h"
+#include "PUAICharacter.generated.h"
 
 class UWidgetComponent;
 class UBehaviorTree;
 
 UCLASS()
-class THIRDPERSONEXAMPLE_API ATPDummyCharacter : public ATPBaseCharacter, public IDamagable
+class THIRDPERSONEXAMPLE_API APUAICharacter : public ATPBaseCharacter, public IDamagable
 {
 	GENERATED_BODY()
 
 public:
-	ATPDummyCharacter(const FObjectInitializer& ObjectInitializer);
+	APUAICharacter(const FObjectInitializer& ObjectInitializer);
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	UBehaviorTree* BehaviorTreeAsset;

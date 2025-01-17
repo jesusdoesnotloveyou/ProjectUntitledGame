@@ -18,7 +18,8 @@ public class ThirdPersonExample : ModuleRules
             "GameplayAbilities",
             "GameplayTags",
             "GameplayTasks",
-            "AIModule"
+            "AIModule",
+			"NavigationSystem"
         });
 
 		PublicIncludePaths.AddRange(new string[]
