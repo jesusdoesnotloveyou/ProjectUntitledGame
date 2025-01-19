@@ -1,24 +1,24 @@
 // Project Untitled Game by JDNLY. All Rights Reserved.
 
 #include "AI/PUAICharacter.h"
-#include "AI/TPBaseAIController.h"
+#include "AI/PUAIBaseController.h"
 #include "GameFrameWork/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/TPHealthComponent.h"
-#include "AI/Components/TPAIWeaponComponent.h"
+#include "AI/Components/PUAIWeaponComponent.h"
 #include "UI/TPHealthBarWidget.h"
-#include "Runtime/AIModule/Classes/AIController.h"
+#include "AIController.h"
 #include "Runtime/AIModule/Classes/BrainComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTPDummyCharacter, All, All);
 
-APUAICharacter::APUAICharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UTPAIWeaponComponent>("WeaponComponent"))
+APUAICharacter::APUAICharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPUAIWeaponComponent>("WeaponComponent"))
 {
 	PrimaryActorTick.bCanEverTick = true;
 	// Pawn interface for AI
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-	AIControllerClass = ATPBaseAIController::StaticClass();
+	AIControllerClass = APUAIBaseController::StaticClass();
 	
 	bUseControllerRotationYaw = false;
 	if (GetCharacterMovement())

@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Perception/AIPerceptionComponent.h"
-#include "TPAIPerceptionComponent.generated.h"
+#include "PUAIPerceptionComponent.generated.h"
 
 UCLASS()
-class THIRDPERSONEXAMPLE_API UTPAIPerceptionComponent : public UAIPerceptionComponent
+class THIRDPERSONEXAMPLE_API UPUAIPerceptionComponent : public UAIPerceptionComponent
 {
 	GENERATED_BODY()
 
 public:
-	UTPAIPerceptionComponent();
+	UPUAIPerceptionComponent();
 
 	AActor* GetClosestEnemy() const;
 };

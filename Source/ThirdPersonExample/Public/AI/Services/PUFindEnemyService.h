@@ -11,4 +11,12 @@ class THIRDPERSONEXAMPLE_API UPUFindEnemyService : public UBTService
 {
 	GENERATED_BODY()
 	
+public:
+	UPUFindEnemyService();
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	FBlackboardKeySelector EnemyActorKey;
+
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

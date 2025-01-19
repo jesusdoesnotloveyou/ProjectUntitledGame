@@ -1,18 +1,18 @@
 // Project Untitled Game by JDNLY. All Rights Reserved.
 
-#include "AI/Components/TPAIPerceptionComponent.h"
+#include "AI/Components/PUAIPerceptionComponent.h"
 #include "AIController.h"
 #include "Components/TPHealthComponent.h"
 #include "Perception/AISense_Sight.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTPAIPerceptionComponent, All, All);
 
-UTPAIPerceptionComponent::UTPAIPerceptionComponent()
+UPUAIPerceptionComponent::UPUAIPerceptionComponent()
 {
 
 }
 
-AActor* UTPAIPerceptionComponent::GetClosestEnemy() const
+AActor* UPUAIPerceptionComponent::GetClosestEnemy() const
 {
     TArray<AActor*> PercievedActors;
 
