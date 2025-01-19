@@ -6,7 +6,7 @@
 #include "AIController.h"
 #include "TPBaseAIController.generated.h"
 
-class UAIPerceptionComponent;
+class UTPAIPerceptionComponent;
 
 UCLASS()
 class THIRDPERSONEXAMPLE_API ATPBaseAIController : public AAIController
@@ -16,8 +16,11 @@ class THIRDPERSONEXAMPLE_API ATPBaseAIController : public AAIController
 public:
 	ATPBaseAIController();
 
+	virtual void Tick(float DeltaTime) override;
+
 protected:
-	UAIPerceptionComponent* AIPerceptionComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UTPAIPerceptionComponent* PUAIPerceptionComponent;
 
 	virtual void OnPossess(APawn* InPawn) override;
 };

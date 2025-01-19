@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PUAICharacter.h"
+#include "AI/PUAICharacter.h"
 #include "PUBossCharacter.generated.h"
 
 UCLASS()

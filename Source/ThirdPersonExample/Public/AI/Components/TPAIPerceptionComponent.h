@@ -10,5 +10,9 @@ UCLASS()
 class THIRDPERSONEXAMPLE_API UTPAIPerceptionComponent : public UAIPerceptionComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	UTPAIPerceptionComponent();
+
+	AActor* GetClosestEnemy() const;
 };
