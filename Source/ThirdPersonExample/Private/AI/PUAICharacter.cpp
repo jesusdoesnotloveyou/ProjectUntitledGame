@@ -1,20 +1,24 @@
 // Project Untitled Game by JDNLY. All Rights Reserved.
 
-#include "TPDummyCharacter.h"
+#include "AI/PUAICharacter.h"
+#include "AI/PUAIBaseController.h"
 #include "GameFrameWork/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/TPHealthComponent.h"
-#include "Components/TPAIWeaponComponent.h"
+#include "AI/Components/PUAIWeaponComponent.h"
 #include "UI/TPHealthBarWidget.h"
-#include "Runtime/AIModule/Classes/AIController.h"
+#include "AIController.h"
 #include "Runtime/AIModule/Classes/BrainComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTPDummyCharacter, All, All);
 
-ATPDummyCharacter::ATPDummyCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UTPAIWeaponComponent>("WeaponComponent"))
+APUAICharacter::APUAICharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPUAIWeaponComponent>("WeaponComponent"))
 {
 	PrimaryActorTick.bCanEverTick = true;
+	// Pawn interface for AI
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AIControllerClass = APUAIBaseController::StaticClass();
 	
 	bUseControllerRotationYaw = false;
 	if (GetCharacterMovement())
@@ -35,7 +39,7 @@ ATPDummyCharacter::ATPDummyCharacter(const FObjectInitializer& ObjectInitializer
 	LockOnWidgetComponent->SetDrawSize(FVector2D(15.0));
 }
 
-void ATPDummyCharacter::BeginPlay()
+void APUAICharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
@@ -43,7 +47,7 @@ void ATPDummyCharacter::BeginPlay()
 	check(LockOnWidgetComponent);
 }
 
-void ATPDummyCharacter::OnHealthChanged(float Health, float HealthDelta)
+void APUAICharacter::OnHealthChanged(float Health, float HealthDelta)
 {
 	Super::OnHealthChanged(Health, HealthDelta);
 	
@@ -53,7 +57,7 @@ void ATPDummyCharacter::OnHealthChanged(float Health, float HealthDelta)
 	HealthBarWidget->SetHealthPercent(HealthComponent->GetHealthPercent(), Health, HealthDelta);
 }
 
-void ATPDummyCharacter::OnDeath()
+void APUAICharacter::OnDeath()
 {
 	Super::OnDeath();
 
@@ -72,7 +76,7 @@ void ATPDummyCharacter::OnDeath()
 	WeaponComponent->SetTarget(false);
 }
 
-void ATPDummyCharacter::Tick(float DeltaTime)
+void APUAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -80,7 +84,7 @@ void ATPDummyCharacter::Tick(float DeltaTime)
 	UpdateTargetVisibility();
 }
 
-void ATPDummyCharacter::UpdateHealthBarVisibility()
+void APUAICharacter::UpdateHealthBarVisibility()
 {
 	if (!GetWorld() ||
 		!GetWorld()->GetFirstPlayerController() ||
@@ -95,7 +99,7 @@ void ATPDummyCharacter::UpdateHealthBarVisibility()
 
 // Targeting should be rewrited different way without setting bIsBeeingTargeted in WeaponComponent from PlayerCharacter
 // I have to finish project before DD so I've implemented feature like this. But only for now.
-void ATPDummyCharacter::UpdateTargetVisibility()
+void APUAICharacter::UpdateTargetVisibility()
 {
 	if (!GetWorld() || !WeaponComponent) return;
 	LockOnWidgetComponent->SetVisibility(WeaponComponent->IsBeeingTargeted(), true);

@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/TPWeaponComponent.h"
-#include "TPAIWeaponComponent.generated.h"
+#include "PUAIWeaponComponent.generated.h"
 
 UCLASS()
-class THIRDPERSONEXAMPLE_API UTPAIWeaponComponent : public UTPWeaponComponent
+class THIRDPERSONEXAMPLE_API UPUAIWeaponComponent : public UTPWeaponComponent
 {
 	GENERATED_BODY()
 

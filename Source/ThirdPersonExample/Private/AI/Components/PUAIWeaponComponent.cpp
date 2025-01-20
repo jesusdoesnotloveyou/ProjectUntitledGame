@@ -1,27 +1,26 @@
 // Project Untitled Game by JDNLY. All Rights Reserved.
 
-
-#include "AI/Components/TPAIWeaponComponent.h"
+#include "AI/Components/PUAIWeaponComponent.h"
 #include "GameFramework/Character.h"
 
-void UTPAIWeaponComponent::Attack()
+void UPUAIWeaponComponent::Attack()
 {
 	PlayAnimMontage(AttackAnimMontages[0], MeleeSpeed);
 }
 
-void UTPAIWeaponComponent::HeavyAttack()
+void UPUAIWeaponComponent::HeavyAttack()
 {
 
 }
 
 // Gotta implement AI in CPP to make this feature work
 
-//void UTPAIWeaponComponent::EquipWeapon()
+//void UPUAIWeaponComponent::EquipWeapon()
 //{
 //	Super::EquipWeapon();
 //}
 
-void UTPAIWeaponComponent::BeginPlay()
+void UPUAIWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
