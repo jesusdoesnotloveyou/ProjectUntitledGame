@@ -77,6 +77,7 @@ void ATPPlayerCharacter::OnDeath()
 void ATPPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 void ATPPlayerCharacter::PossessedBy(AController* NewController)

@@ -33,7 +33,10 @@ public:
 
 protected:
 	virtual void OnHealthChanged(float Health, float HealthDelta);
+	virtual void OnHitReact();
 	virtual void OnDeath();
+	virtual void InitAnimations();
+
 	virtual void BeginPlay() override;
 
 	// Movement interface
@@ -45,18 +48,34 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UTPWeaponComponent* WeaponComponent;
 
-#pragma region Death
-	UPROPERTY(EditDefaultsOnly, Category = "Death")
+#pragma region Animations
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Hit | Animation")
+	TArray<UAnimMontage*> HitAnimMontages;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Death | Animation")
 	class UAnimMontage* DeathAnimMontage;
-	UPROPERTY(EditDefaultsOnly, Category = "Death")
+#pragma endregion
+	UPROPERTY(EditDefaultsOnly, Category = "Death | Animation")
 	float LifeSpanOnDeath = 5.0f;
-	UPROPERTY(EditDefaultsOnly, Category = "Death")
+	
+#pragma region Sounds
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Hit | Sound")
+	USoundBase* HitSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Hit | Sound")
+	float HitVolumeMultiplier = 0.6f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Death | Sound")
 	USoundBase* SoundOnDeath;
-	UPROPERTY(EditDefaultsOnly, Category = "Death")
+
+	UPROPERTY(EditDefaultsOnly, Category = "Death | Sound")
 	float DeathPitchMultiplier = 1.f;
-	UPROPERTY(EditDefaultsOnly, Category = "Death")
+
+	UPROPERTY(EditDefaultsOnly, Category = "Death | Sound")
 	float DeathVolumeMultiplier = 1.f;
 #pragma endregion
+
+	
 public:
 	bool IsEquipAnimInProgress() const;
 	bool IsBlockRequested() const;

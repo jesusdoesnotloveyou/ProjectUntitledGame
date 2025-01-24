@@ -57,17 +57,6 @@ void UTPWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void UTPWeaponComponent::ReactToHit()
-{
-	UE_LOG(LogTPWeaponComponent, Error, TEXT("ReactToHit() called!"));
-
-	if (HitAnimMontages.Num() != 0)
-	{
-		PlayAnimMontage(HitAnimMontages[FMath::RandHelper(HitAnimMontages.Num())]);
-	}
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, GetOwner()->GetActorLocation(), HitVolumeMultiplier);
-}
-
 void UTPWeaponComponent::Attack()
 {
 	if (!CanAttack()) return;
@@ -236,20 +225,6 @@ void UTPWeaponComponent::InitAnimations()
 		}
 	}
 
-	if (HitAnimMontages.Num() == 0) return;
-	for (const auto AnimMontage : HitAnimMontages)
-	{
-		if (!AnimMontage) continue;
-		const auto NotifyEvents = AnimMontage->Notifies;
-		for (auto NotifyEvent : NotifyEvents) 
-		{
-			if (const auto ResetComboNotify = Cast<UTPResetComboAnimNotify>(NotifyEvent.Notify))
-			{
-				// Should use state to avoid this copying of logic for reset
-				ResetComboNotify->OnResetComboNotified.AddUObject(this, &UTPWeaponComponent::OnResetState);
-			}
-		}
-	}
 	// Roll and Dash
 	if (!RollAnimMontage) return;
 
@@ -344,7 +319,7 @@ bool UTPWeaponComponent::IsWeaponEquiped() const
 
 bool UTPWeaponComponent::IsBlockRequested() const
 { 
-	return bIsBlockRequested; 
+	return bIsBlockRequested;
 }
 
 bool UTPWeaponComponent::IsRolling() const

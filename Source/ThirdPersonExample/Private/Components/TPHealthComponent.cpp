@@ -131,7 +131,7 @@ void UTPHealthComponent::ApplyDamage(float Damage, AController* InstigatedBy, co
 	ReportDamageEvent(Damage, InstigatedBy);
 }
 
-
+// 
 void UTPHealthComponent::PlayCameraShake()
 {
 	if (IsDead()) return;

@@ -12,6 +12,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
+#include "TPResetComboAnimNotify.h"
+
 DEFINE_LOG_CATEGORY_STATIC(LogTPBaseCharacter, All, All);
 
 //////////////////////////////////////////////////////////////////////////
@@ -61,6 +63,8 @@ void ATPBaseCharacter::BeginPlay()
 	HealthComponent->OnHealthChanged.AddUObject(this, &ATPBaseCharacter::OnHealthChanged);
 	HealthComponent->OnDeath.AddUObject(this, &ATPBaseCharacter::OnDeath);
 
+	InitAnimations();
+
 	UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
 	if (ASC) {
 		AttributeSet = ASC->GetSet<UTPAttributeSet>();
@@ -74,8 +78,19 @@ void ATPBaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 
 	if (HealthDelta < 0)
 	{
-		WeaponComponent->ReactToHit();
+		OnHitReact();
 	}
+}
+
+void ATPBaseCharacter::OnHitReact()
+{
+	UE_LOG(LogTPBaseCharacter, Warning, TEXT("OnDamageReact() called!"));
+
+	if (HitAnimMontages.Num() != 0)
+	{
+		PlayAnimMontage(HitAnimMontages[FMath::RandHelper(HitAnimMontages.Num())]);
+	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, GetActorLocation(), HitVolumeMultiplier);
 }
 
 void ATPBaseCharacter::OnDeath()
@@ -84,7 +99,29 @@ void ATPBaseCharacter::OnDeath()
 	BaseCharacterMovement->DisableMovement();
 	SetLifeSpan(LifeSpanOnDeath);
 
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetSimulatePhysics(true);
+
 	UGameplayStatics::PlaySoundAtLocation(this, SoundOnDeath, GetActorLocation(), DeathVolumeMultiplier, DeathPitchMultiplier);
+}
+
+void ATPBaseCharacter::InitAnimations()
+{
+	if (HitAnimMontages.Num() == 0) return;
+	for (const auto AnimMontage : HitAnimMontages)
+	{
+		if (!AnimMontage) continue;
+		const auto NotifyEvents = AnimMontage->Notifies;
+		for (auto NotifyEvent : NotifyEvents)
+		{
+			if (const auto ResetComboNotify = Cast<UTPResetComboAnimNotify>(NotifyEvent.Notify))
+			{
+				// Should use state to avoid this copying of logic for reset
+				ResetComboNotify->OnResetComboNotified.AddUObject(WeaponComponent, &UTPWeaponComponent::OnResetState);
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
