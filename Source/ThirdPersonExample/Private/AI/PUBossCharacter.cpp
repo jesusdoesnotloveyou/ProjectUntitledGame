@@ -12,16 +12,6 @@ APUBossCharacter::APUBossCharacter(const FObjectInitializer& ObjectInitializer) 
 
 void APUBossCharacter::OnDeath()
 {
-	SetLifeSpan(LifeSpanOnDeath);
+	Super::OnDeath();
 	PlayAnimMontage(DeathAnimMontage);
-
-	const auto EnemyController = Cast<AAIController>(Controller);
-
-	if (EnemyController && EnemyController->BrainComponent)
-	{
-		EnemyController->BrainComponent->Cleanup();
-	}
-
-	// Check my thoughts about Targeting below
-	WeaponComponent->SetTarget(false);
 }

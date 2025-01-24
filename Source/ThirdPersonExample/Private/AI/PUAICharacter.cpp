@@ -9,7 +9,7 @@
 #include "AI/Components/PUAIWeaponComponent.h"
 #include "UI/TPHealthBarWidget.h"
 #include "AIController.h"
-#include "Runtime/AIModule/Classes/BrainComponent.h"
+#include "BrainComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTPDummyCharacter, All, All);
 
@@ -60,10 +60,6 @@ void APUAICharacter::OnHealthChanged(float Health, float HealthDelta)
 void APUAICharacter::OnDeath()
 {
 	Super::OnDeath();
-
-	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	GetMesh()->SetSimulatePhysics(true);
 
 	const auto EnemyController = Cast<AAIController>(Controller);
 
