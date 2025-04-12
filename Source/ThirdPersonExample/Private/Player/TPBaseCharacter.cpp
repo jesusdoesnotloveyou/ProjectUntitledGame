@@ -112,8 +112,8 @@ void ATPBaseCharacter::InitAnimations()
 	for (const auto AnimMontage : HitAnimMontages)
 	{
 		if (!AnimMontage) continue;
-		const auto NotifyEvents = AnimMontage->Notifies;
-		for (auto NotifyEvent : NotifyEvents)
+		const auto& NotifyEvents = AnimMontage->Notifies;
+		for (auto& NotifyEvent : NotifyEvents)
 		{
 			if (const auto ResetComboNotify = Cast<UTPResetComboAnimNotify>(NotifyEvent.Notify))
 			{
