@@ -42,6 +42,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	ATPBaseWeapon* GetCurrentWeapon() const { return CurrentWeapon; }
 
+	FOnGameplayStateChangedSignature OnGameplayStateChanged;
+
 protected:
 #pragma region Animations
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Equip")
@@ -86,9 +88,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AI | Weapon")
 	bool IsWeaponEquiped() const;
 
-	bool IsEquipAnimInProgress() const;
-	bool IsBlockRequested() const;
-	bool IsRolling() const;
+	FORCEINLINE bool IsEquipAnimInProgress() const { return bIsEquipAnimInProgress; }
+	FORCEINLINE bool IsBlockRequested() const { return bIsBlockRequested; }
+	FORCEINLINE bool IsRolling() const { return bIsRolling; }
 
 	// Combat System for animNotifies
 	void OnResetState();
@@ -140,5 +142,4 @@ public:
 	virtual bool IsBeeingTargeted() const;
 private:
 	bool bIsBeeingTargeted = false;
-	//
 };
