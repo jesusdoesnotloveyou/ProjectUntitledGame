@@ -77,6 +77,9 @@ void ATPPlayerCharacter::OnDeath()
 void ATPPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	HealthComponent->OnGameplayStateChanged.AddUObject(this, &ATPPlayerCharacter::SetGameplayState);
+	WeaponComponent->OnGameplayStateChanged.AddUObject(this, &ATPPlayerCharacter::SetGameplayState);
 }
 
 void ATPPlayerCharacter::PossessedBy(AController* NewController)
@@ -99,7 +102,8 @@ void ATPPlayerCharacter::Tick(float DeltaTime)
 		{
 			if (!GetController()) return;
 
-			const auto LookAtTarget = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetActor->GetActorLocation());
+			auto LookAtTarget = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetActor->GetActorLocation());
+			LookAtTarget.Pitch -= 20.0f;
 			const auto CurrentRotation = Controller->GetControlRotation();
 			Controller->SetControlRotation(UKismetMathLibrary::RInterpTo(CurrentRotation, LookAtTarget, DeltaTime, CameraTargetingRotationSpeed));
 			
@@ -111,6 +115,7 @@ void ATPPlayerCharacter::Tick(float DeltaTime)
 			DisableTargeting();
 		}
 	}
+	UE_LOG(LogTPPlayerCharacter, Error, TEXT("CurrentGameplayState = %i"), static_cast<uint8_t>(CurrentGameplayState));
 }
 
 void ATPPlayerCharacter::Destroyed()
@@ -335,6 +340,12 @@ bool ATPPlayerCharacter::CanAttack()
 	return true;
 }
 
+void ATPPlayerCharacter::SetGameplayState(EPUGameplayState NewGameplayState)
+{
+	if (CurrentGameplayState == NewGameplayState) return;
+	CurrentGameplayState = NewGameplayState;
+}
+
 void ATPPlayerCharacter::LockOnTarget()
 {
 	if (!bIsTargeting && IsWeaponEquiped()) 
@@ -362,7 +373,6 @@ void ATPPlayerCharacter::LockOnTarget()
 	{
 		DisableTargeting();
 	}
-
 }
 
 void ATPPlayerCharacter::DisableTargeting()

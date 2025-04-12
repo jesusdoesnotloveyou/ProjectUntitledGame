@@ -17,22 +17,13 @@ AActor* UPUAIPerceptionComponent::GetClosestEnemy() const
     TArray<AActor*> PercievedActors;
 
     GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PercievedActors);
-    if (PercievedActors.Num() == 0)
-    {   
-        UE_LOG(LogTPAIPerceptionComponent, Warning, TEXT("PercievedActors.Num() = 0"));
-        return nullptr;
-    }
+    if (PercievedActors.Num() == 0) return nullptr;
+
     const auto Controller = Cast<AAIController>(GetOwner());
-    if (!Controller) {
-        UE_LOG(LogTPAIPerceptionComponent, Warning, TEXT("!Controller"));
-        return nullptr;
-    }
+    if (!Controller) return nullptr;
     
     const auto ControlledPawn = Controller->GetPawn();
-    if (!ControlledPawn) {
-        UE_LOG(LogTPAIPerceptionComponent, Warning, TEXT("!ControlledPawn"));
-        return nullptr;
-    }
+    if (!ControlledPawn) return nullptr;
 
     float BestDistance = MAX_FLT;
     AActor* BestPawn = nullptr;
@@ -50,11 +41,5 @@ AActor* UPUAIPerceptionComponent::GetClosestEnemy() const
             }
         }
     }
-
-    if (!BestPawn)
-    {
-        UE_LOG(LogTPAIPerceptionComponent, Warning, TEXT("Best pawn isn't valid"));
-    }
-
     return BestPawn;
 }

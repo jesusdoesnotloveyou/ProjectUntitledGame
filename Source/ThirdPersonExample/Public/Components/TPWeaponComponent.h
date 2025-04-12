@@ -42,11 +42,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	ATPBaseWeapon* GetCurrentWeapon() const { return CurrentWeapon; }
 
-	void ReactToHit();
+	FOnGameplayStateChangedSignature OnGameplayStateChanged;
 
 protected:
 #pragma region Animations
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Equip")
 	TArray<UAnimMontage*> EquipAnimMontages;
 
@@ -61,24 +60,12 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Attack"/*, ClampMin = ("1.0")*/)
 	float MeleeSpeed = 1.5f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Hit")
-	TArray<UAnimMontage*> HitAnimMontages;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Animation | Dodge")
 	UAnimMontage* RollAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation | Dodge"/*, ClampMin = ("1.0")*/)
 	float RollSpeed = 1.5f;
-
-#pragma endregion
-
-#pragma region Sounds
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sounds")
-	USoundBase* HitSound;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sounds")
-	float HitVolumeMultiplier = 0.6f;
 #pragma endregion
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -97,16 +84,28 @@ protected:
 
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
-	/*UFUNCTION(BlueprintCallable, Category = "AI")
-	void SetWeaponEquiped(bool bIsEquiped);*/
 
 	UFUNCTION(BlueprintCallable, Category = "AI | Weapon")
 	bool IsWeaponEquiped() const;
 
-	bool IsEquipAnimInProgress() const;
-	bool IsBlockRequested() const;
-	bool IsRolling() const;
+	FORCEINLINE bool IsEquipAnimInProgress() const { return bIsEquipAnimInProgress; }
+	FORCEINLINE bool IsBlockRequested() const { return bIsBlockRequested; }
+	FORCEINLINE bool IsRolling() const { return bIsRolling; }
+
+	// Combat System for animNotifies
+	void OnResetState();
+	// Light attack strike
+	int32 AttackCount = 0;
+	// Maybe usefull for BP
+	UPROPERTY(BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	bool bIsAttacking = false;
+	bool bSaveAttack = false;
+	// Roll and dash
+	bool bIsRolling = false;
+
+	bool bIsEquipAnimInProgress = false;
+	bool bIsWeaponEquiped = false;
+	bool bIsBlockRequested = false;
 private:
 	FTimeline RollLaunchTimeline;
 	void InitializeRollTimeline();
@@ -121,32 +120,17 @@ private:
 	void RollUpdate(float Alpha);
 
 	// Combat System
+	//~ For animNotifies
 	void OnSaveAttack();
 	void OnResetCombo();
+	// ~
 	void PlayAttackMontageByIndex(int32& AttackIndex);
-
-	void OnResetState();
-
-	// Light attack strike
-	int32 AttackCount = 0;
-	// Maybe usefull for BP
-	UPROPERTY(BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	bool bIsAttacking = false;
-	bool bSaveAttack = false;
-	// Roll and dash
-	bool bIsRolling = false;
-
+	
+	void SpawnWeapon();
+	void InitAnimations();
 	// Callback for AnimNotifies
 	void OnEquipWeapon();
 	void OnRollEnd();
-
-	void SpawnWeapon();
-	void InitAnimations();
-
-
-	bool bIsEquipAnimInProgress = false;
-	bool bIsWeaponEquiped = false;
-	bool bIsBlockRequested = false;
 
 protected:
 	void PlayAnimMontage(UAnimMontage* Animation, float AnimationSpeed = 1.0f);	
@@ -158,5 +142,4 @@ public:
 	virtual bool IsBeeingTargeted() const;
 private:
 	bool bIsBeeingTargeted = false;
-	//
 };

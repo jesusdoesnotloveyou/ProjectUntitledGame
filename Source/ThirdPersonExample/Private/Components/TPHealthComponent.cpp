@@ -7,7 +7,7 @@
 #include "GameFramework/Controller.h"
 #include "Camera/CameraShakeBase.h"
 #include "Kismet/GameplayStatics.h"
-#include <Runtime/AIModule/Classes/Perception/AISense_Damage.h>
+#include "Perception/AISense_Damage.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTPHealthComponent, All, All);
 
@@ -44,7 +44,7 @@ void UTPHealthComponent::UseHealPotion()
 	if (IsDead() || PotionsAmount == 0) return;
 
 	bIsHealing = true;
-
+	OnGameplayStateChanged.Broadcast(EPUGameplayState::Healing);
 	PlayAnimMontage(HealAnimMontage);
 
 	const auto HealBuf = Potion.HealEffect * Potion.HealModifier;
@@ -60,11 +60,6 @@ void UTPHealthComponent::PlayAnimMontage(UAnimMontage* Animation, float Animatio
 		return;
 
 	Character->PlayAnimMontage(Animation);
-}
-
-bool UTPHealthComponent::IsHealing() const
-{
-	return bIsHealing;
 }
 
 bool UTPHealthComponent::TryToAddPotionPickup()
@@ -131,7 +126,7 @@ void UTPHealthComponent::ApplyDamage(float Damage, AController* InstigatedBy, co
 	ReportDamageEvent(Damage, InstigatedBy);
 }
 
-
+// 
 void UTPHealthComponent::PlayCameraShake()
 {
 	if (IsDead()) return;
