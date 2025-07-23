@@ -144,6 +144,7 @@ private:
 	bool bIsSprintRequested = false;
 	void TryChangeSprintState();
 
+	// @todo: incapsulate logic to separate component
 #pragma region Targeting
 	bool bIsTargeting = false;
 
