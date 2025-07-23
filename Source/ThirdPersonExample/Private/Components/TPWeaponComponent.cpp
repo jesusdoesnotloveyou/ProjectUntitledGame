@@ -57,20 +57,11 @@ void UTPWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void UTPWeaponComponent::ReactToHit()
-{
-	UE_LOG(LogTPWeaponComponent, Error, TEXT("ReactToHit() called!"));
-
-	if (HitAnimMontages.Num() != 0)
-	{
-		PlayAnimMontage(HitAnimMontages[FMath::RandHelper(HitAnimMontages.Num())]);
-	}
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, GetOwner()->GetActorLocation(), HitVolumeMultiplier);
-}
-
 void UTPWeaponComponent::Attack()
 {
 	if (!CanAttack()) return;
+
+	OnGameplayStateChanged.Broadcast(EPUGameplayState::Attacking);
 
 	UE_LOG(LogTPWeaponComponent, Warning, TEXT("Is Attacking before = %d"), bIsAttacking);
 	UE_LOG(LogTPWeaponComponent, Warning, TEXT("AttackCount = %i"), AttackCount);
@@ -125,6 +116,7 @@ void UTPWeaponComponent::HeavyAttack()
 {
 	if (!CanAttack()) return;
 	bIsAttacking = true;
+	OnGameplayStateChanged.Broadcast(EPUGameplayState::Attacking);
 
 	PlayAnimMontage(HeavyAttackAnimMontage, MeleeSpeed);
 }
@@ -194,8 +186,8 @@ void UTPWeaponComponent::InitAnimations()
 	for (const auto AnimMontage : EquipAnimMontages)
 	{
 		if (!AnimMontage) continue;
-		const auto NotifyEvents = AnimMontage->Notifies;
-		for (auto NotifyEvent : NotifyEvents) {
+		const auto& NotifyEvents = AnimMontage->Notifies;
+		for (auto& NotifyEvent : NotifyEvents) {
 			if (const auto EquipNotify = Cast<UTPEquipWeaponAnimNotify>(NotifyEvent.Notify))
 			{
 				EquipNotify->OnWeaponEquipedNotified.AddUObject(this, &UTPWeaponComponent::OnEquipWeapon);
@@ -207,8 +199,8 @@ void UTPWeaponComponent::InitAnimations()
 	for (const auto AnimMontage : AttackAnimMontages)
 	{
 		if (!AnimMontage) continue;
-		const auto NotifyEvents = AnimMontage->Notifies;
-		for (auto NotifyEvent : NotifyEvents) {
+		const auto& NotifyEvents = AnimMontage->Notifies;
+		for (auto& NotifyEvent : NotifyEvents) {
 			if (const auto SaveAttackNotify = Cast<UTPSaveAttackAnimNotify>(NotifyEvent.Notify))
 			{
 				SaveAttackNotify->OnSaveAttackNotified.AddUObject(this, &UTPWeaponComponent::OnSaveAttack);
@@ -222,8 +214,8 @@ void UTPWeaponComponent::InitAnimations()
 
 	if (!HeavyAttackAnimMontage) return;
 	{
-		const auto NotifyEvents = HeavyAttackAnimMontage->Notifies;
-		for (auto NotifyEvent : NotifyEvents) {
+		const auto& NotifyEvents = HeavyAttackAnimMontage->Notifies;
+		for (auto& NotifyEvent : NotifyEvents) {
 			if (const auto SaveAttackNotify = Cast<UTPSaveAttackAnimNotify>(NotifyEvent.Notify))
 			{
 				SaveAttackNotify->OnSaveAttackNotified.AddUObject(this, &UTPWeaponComponent::OnSaveAttack);
@@ -236,25 +228,11 @@ void UTPWeaponComponent::InitAnimations()
 		}
 	}
 
-	if (HitAnimMontages.Num() == 0) return;
-	for (const auto AnimMontage : HitAnimMontages)
-	{
-		if (!AnimMontage) continue;
-		const auto NotifyEvents = AnimMontage->Notifies;
-		for (auto NotifyEvent : NotifyEvents) 
-		{
-			if (const auto ResetComboNotify = Cast<UTPResetComboAnimNotify>(NotifyEvent.Notify))
-			{
-				// Should use state to avoid this copying of logic for reset
-				ResetComboNotify->OnResetComboNotified.AddUObject(this, &UTPWeaponComponent::OnResetState);
-			}
-		}
-	}
 	// Roll and Dash
 	if (!RollAnimMontage) return;
 
-	const auto NotifyEvents = RollAnimMontage->Notifies;
-	for (auto NotifyEvent : NotifyEvents) {
+	const auto& NotifyEvents = RollAnimMontage->Notifies;
+	for (auto& NotifyEvent : NotifyEvents) {
 		if (const auto RollEndNotify = Cast<UTPRollEndedAnimNotify>(NotifyEvent.Notify))
 		{
 			RollEndNotify->OnRollEndNotified.AddUObject(this, &UTPWeaponComponent::OnResetState);
@@ -332,24 +310,9 @@ void UTPWeaponComponent::OnRollEnd()
 	bIsRolling = false;
 }
 
-bool UTPWeaponComponent::IsEquipAnimInProgress() const
-{
-	return bIsEquipAnimInProgress;
-}
-
 bool UTPWeaponComponent::IsWeaponEquiped() const
 {
 	return (CurrentWeapon && bIsWeaponEquiped);
-}
-
-bool UTPWeaponComponent::IsBlockRequested() const
-{ 
-	return bIsBlockRequested; 
-}
-
-bool UTPWeaponComponent::IsRolling() const
-{
-	return bIsRolling;
 }
 
 void UTPWeaponComponent::SetTarget(bool bIsTargeted)

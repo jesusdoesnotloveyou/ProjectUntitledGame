@@ -120,13 +120,12 @@ protected:
 	virtual void OnJumped_Implementation() override;
 
 public:
+	FOnPlayerCharacterDeathSignature OnPlayerCharacterDeath;
+	
 	ATPPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
-	FOnPlayerCharacterDeathSignature OnPlayerCharacterDeath;
-protected:
-	virtual void OnDeath() override;
-	virtual void BeginPlay() override;
-public:
+	void SetGameplayState(EPUGameplayState NewGameplayState);
+
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void Destroyed() override;
@@ -139,12 +138,19 @@ public:
 	FORCEINLINE class UCameraComponent* GetThirdPersonCamera() const { return ThirdPersonCamera; }
 	/** Returns FirstPersonCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCamera() const { return FirstPersonCamera; }
+
+protected:
+	virtual void OnDeath() override;
+	virtual void BeginPlay() override;
 	
 private:
+	EPUGameplayState CurrentGameplayState;
+
+#pragma region Abilities
 	bool bIsSprintRequested = false;
 	void TryChangeSprintState();
-
 	// @todo: incapsulate logic to separate component
+#pragma endregion
 #pragma region Targeting
 	bool bIsTargeting = false;
 

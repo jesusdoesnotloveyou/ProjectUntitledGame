@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Player/TPDummyCharacter.h"
+#include "AI/PUAICharacter.h"
 #include "PUBossCharacter.generated.h"
 
 UCLASS()
-class THIRDPERSONEXAMPLE_API APUBossCharacter : public ATPDummyCharacter
+class THIRDPERSONEXAMPLE_API APUBossCharacter : public APUAICharacter
 {
 	GENERATED_BODY()
 

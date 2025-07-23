@@ -34,7 +34,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnBlockedSignature, bool);
 // Targeting icon
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTargetedSignature, bool);
 
-// Damage system | Health Component
+//~ Damage system | Health Component
 UENUM(BlueprintType)
 enum class EPUDamageType : uint8
 {
@@ -72,3 +72,55 @@ public:
 	uint8 bCanBeBlocked : 1;
 	uint8 bShouldForceInterrupt : 1;
 };
+//~
+
+// AI
+UENUM(BlueprintType)
+enum class EPUAISense : uint8
+{
+	None = 0,
+	Sight,
+	Hearing,
+	Damage,
+	MAX = 4 UMETA(Hidden)
+};
+ENUM_RANGE_BY_COUNT(EPUAISense, EPUAISense::MAX);
+
+UENUM(BlueprintType)
+enum class EPUAIState : uint8
+{
+	Passive = 0,
+	Attacking,
+	Investigating,
+	Stun,
+	Dead,
+	MAX = 5 UMETA(Hidden)
+};
+ENUM_RANGE_BY_COUNT(EPUAIState, EPUAIState::MAX);
+
+UENUM(BlueprintType)
+enum class EPUAIMovementState : uint8
+{
+	Idle = 0,
+	Walking,
+	Jogging,
+	Sprinting,
+	MAX = 4 UMETA(Hidden)
+};
+ENUM_RANGE_BY_COUNT(EPUAIMovementState, EPUAIMovementState::MAX);
+
+// Player Gameplay State
+UENUM(BlueprintType)
+enum class EPUGameplayState : uint8
+{
+	None = 0,
+	Attacking,
+	Stunning,
+	Rolling,
+	Healing,
+	Blocking,
+	MAX = 6 UMETA(Hidden)
+};
+ENUM_RANGE_BY_COUNT(EPUGameplayState, EPUGameplayState::MAX);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameplayStateChangedSignature, EPUGameplayState);

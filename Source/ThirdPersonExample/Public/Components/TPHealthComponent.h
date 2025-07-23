@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "PUCoreTypes.h"
 #include "TPHealthComponent.generated.h"
 
 class UCameraShakeBase;
@@ -34,6 +35,7 @@ public:
 
 	FOnHealthChangedSignature OnHealthChanged;
 	FOnDeathSignature OnDeath;
+	FOnGameplayStateChangedSignature OnGameplayStateChanged;
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	float GetHealthPercent() const { return Health / MaxHealth; }
@@ -45,7 +47,7 @@ public:
 	bool IsHealthFull() const;
 
 	void UseHealPotion();
-	bool IsHealing() const;
+	FORCEINLINE bool IsHealing() const { return bIsHealing; }
 	bool TryToAddPotionPickup();
 	int32 GetNumberOfPotions() const;
 
